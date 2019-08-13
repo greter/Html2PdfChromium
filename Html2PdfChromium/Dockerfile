@@ -31,4 +31,5 @@ RUN apt-get clean
 WORKDIR /app
 COPY --from=publish /app .
 EXPOSE 5000
+EXPOSE 5001
 ENTRYPOINT ["/app/Html2PdfChromium"]
