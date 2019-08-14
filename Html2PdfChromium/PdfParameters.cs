@@ -8,7 +8,7 @@ namespace Html2PdfChromium
         /// <summary>
         /// URL to the page that get's converted
         /// </summary>
-        public string bodyUrl { get; set; }
+        public string BodyUrl { get; set; }
 
         /// <summary>
         /// Scale of the webpage rendering. Defaults to <c>1</c>. Scale amount must be between 0.1 and 2.

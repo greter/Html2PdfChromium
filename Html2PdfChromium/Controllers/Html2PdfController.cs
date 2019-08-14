@@ -29,7 +29,7 @@ namespace Html2PdfChromium.Controllers
                 Args = new string[] {"--no-sandbox", "--disable-setuid-sandbox"},
             });
             var page = await browser.NewPageAsync();
-            await page.GoToAsync(parameters.bodyUrl);
+            await page.GoToAsync(parameters.BodyUrl);
             var pdfOptions = new PdfOptions();
             pdfOptions.Scale = parameters.Scale;
             pdfOptions.DisplayHeaderFooter = parameters.DisplayHeaderFooter;
