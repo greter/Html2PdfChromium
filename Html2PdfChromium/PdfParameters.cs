@@ -77,5 +77,11 @@ namespace Html2PdfChromium
         /// Defaults to <c>false</c>, which will scale the content to fit the paper size.
         /// </summary>
         public bool PreferCSSPageSize { get; set; } = false;
+
+        /// <summary>
+        /// Timeout used when calling the body page in ms
+        /// Defaults to 30000 -> 30 seconds
+        /// </summary>
+        public int TimeOut { get; set; } = 30000;
     }
 }
