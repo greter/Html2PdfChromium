@@ -36,8 +36,14 @@ namespace Html2PdfChromium.Controllers
             {
                 Timeout = parameters.TimeOut
             };
-            await page.GoToAsync(parameters.BodyUrl, ops);
+            var response = await page.GoToAsync(parameters.BodyUrl, ops);
             Console.WriteLine($"{guid} {DateTime.Now}: Page loaded");
+
+            if (!response.Ok)
+            {
+                Console.WriteLine($"{guid} {DateTime.Now}: Page returned with an error {response.Status}");
+            }
+            
             var pdfOptions = new PdfOptions();
             pdfOptions.Scale = parameters.Scale;
             pdfOptions.DisplayHeaderFooter = parameters.DisplayHeaderFooter;
