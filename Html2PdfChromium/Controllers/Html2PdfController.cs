@@ -22,18 +22,22 @@ namespace Html2PdfChromium.Controllers
         [HttpPost]
         public async Task<IActionResult> PolicyStatement([FromBody] PdfParameters parameters)
         {
+            var guid = new Guid().ToString();
+            Console.WriteLine($"{guid} {DateTime.Now}: PDF generation for {parameters.BodyUrl} starts");
             var revInfo = await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
             var browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true,
                 Args = new string[] {"--no-sandbox", "--disable-setuid-sandbox"},
             });
+            Console.WriteLine($"{guid} {DateTime.Now}: Browser loaded");
             var page = await browser.NewPageAsync();
             var ops = new NavigationOptions()
             {
                 Timeout = parameters.TimeOut
             };
             await page.GoToAsync(parameters.BodyUrl, ops);
+            Console.WriteLine($"{guid} {DateTime.Now}: Page loaded");
             var pdfOptions = new PdfOptions();
             pdfOptions.Scale = parameters.Scale;
             pdfOptions.DisplayHeaderFooter = parameters.DisplayHeaderFooter;
@@ -53,9 +57,12 @@ namespace Html2PdfChromium.Controllers
             pdfOptions.PreferCSSPageSize = parameters.PreferCSSPageSize;
             
             var pdf = await page.PdfStreamAsync(pdfOptions);
+            Console.WriteLine($"{guid} {DateTime.Now}: PDF generated");
             var closePageTask = page.CloseAsync();
             
             await closePageTask;
+            
+            Console.WriteLine($"{guid} {DateTime.Now}: browser closed");
             
             return new FileStreamResult(pdf, "application/pdf") {FileDownloadName = "document.pdf"};
         }

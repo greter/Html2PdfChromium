@@ -19,6 +19,7 @@ namespace Html2PdfChromium
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel(options => { options.Limits.MinResponseDataRate = null; })
                 .UseUrls("http://*:5000")
                 .UseStartup<Startup>();
     }
