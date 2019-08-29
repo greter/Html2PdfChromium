@@ -22,7 +22,7 @@ namespace Html2PdfChromium.Controllers
         [HttpPost]
         public async Task<IActionResult> PolicyStatement([FromBody] PdfParameters parameters)
         {
-            var guid = new Guid().ToString();
+            var guid = Guid.NewGuid().ToString();
             Console.WriteLine($"{guid} {DateTime.Now}: PDF generation for {parameters.BodyUrl} starts");
             var revInfo = await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
             var browser = await Puppeteer.LaunchAsync(new LaunchOptions
