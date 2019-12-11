@@ -39,3 +39,4 @@
                
                #PuppeteerSharp
                .local-chromium
+               Html2PdfChromium/.local-chromium
