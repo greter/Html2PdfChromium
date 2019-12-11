@@ -61,7 +61,7 @@ namespace Html2PdfChromium
 
         //POST api/Html2PdfAsync
         [HttpPost]
-        public ActionResult<ConversionJob> CreatePdfSync([FromBody] PdfParameters parameters)
+        public ActionResult<ConversionJob> CreatePdfAsync([FromBody] PdfParameters parameters)
         {
             var converionId = Guid.NewGuid().ToString();
             BackgroundJob.Enqueue(() => CreatePdfImpl(converionId, parameters));
