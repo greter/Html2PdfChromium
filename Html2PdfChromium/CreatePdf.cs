@@ -23,7 +23,8 @@ namespace Html2PdfChromium
             var page = await browser.NewPageAsync();
             var ops = new NavigationOptions()
             {
-                Timeout = parameters.TimeOut
+                Timeout = parameters.TimeOut,
+                WaitUntil = new [] {WaitUntilNavigation.Networkidle0, WaitUntilNavigation.DOMContentLoaded, WaitUntilNavigation.Load}
             };
             var response = await page.GoToAsync(parameters.BodyUrl, ops);
             Console.WriteLine($"{guid} {DateTime.Now}: Page loaded");
