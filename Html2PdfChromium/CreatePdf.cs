@@ -14,53 +14,62 @@ namespace Html2PdfChromium
             var guid = Guid.NewGuid().ToString();
             Console.WriteLine($"{guid} {DateTime.Now}: PDF generation for {parameters.BodyUrl} starts");
             var revInfo = await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            var launchOptions = new LaunchOptions
             {
                 Headless = true,
                 Args = new string[] {"--no-sandbox", "--disable-setuid-sandbox"},
-            });
-            Console.WriteLine($"{guid} {DateTime.Now}: Browser loaded");
-            var page = await browser.NewPageAsync();
-            var ops = new NavigationOptions()
-            {
-                Timeout = parameters.TimeOut,
-                WaitUntil = new [] {WaitUntilNavigation.Networkidle0, WaitUntilNavigation.DOMContentLoaded, WaitUntilNavigation.Load}
             };
-            var response = await page.GoToAsync(parameters.BodyUrl, ops);
-            Console.WriteLine($"{guid} {DateTime.Now}: Page loaded");
-
-            if (!response.Ok)
+            using (var browser = await Puppeteer.LaunchAsync(launchOptions))
             {
-                Console.WriteLine($"{guid} {DateTime.Now}: Page returned with an error {response.Status}");
+                Console.WriteLine($"{guid} {DateTime.Now}: Browser loaded");
+                Stream pdf;
+                using (var page = await browser.NewPageAsync())
+                {
+                    var ops = new NavigationOptions()
+                    {
+                        Timeout = parameters.TimeOut,
+                        WaitUntil = new [] {WaitUntilNavigation.Networkidle0, WaitUntilNavigation.DOMContentLoaded, WaitUntilNavigation.Load}
+                    };
+                    var response = await page.GoToAsync(parameters.BodyUrl, ops);
+                    Console.WriteLine($"{guid} {DateTime.Now}: Page loaded");
+
+                    if (!response.Ok)
+                    {
+                        Console.WriteLine($"{guid} {DateTime.Now}: Page returned with an error {response.Status}");
+                    }
+
+                    var pdfOptions = new PdfOptions();
+                    pdfOptions.Scale = parameters.Scale;
+                    pdfOptions.DisplayHeaderFooter = parameters.DisplayHeaderFooter;
+                    pdfOptions.HeaderTemplate = parameters.HeaderTemplate;
+                    pdfOptions.FooterTemplate = parameters.FooterTemplate;
+                    pdfOptions.PrintBackground = parameters.PrintBackground;
+                    pdfOptions.Landscape = parameters.Landscape;
+                    pdfOptions.PageRanges = parameters.PageRanges;
+                    pdfOptions.Format = ConvertToPaperFormat(parameters.PaperFormat);
+                    pdfOptions.MarginOptions = new MarginOptions
+                    {
+                        Top = parameters.TopMargin,
+                        Left = parameters.LeftMargin,
+                        Bottom = parameters.BottomMargin,
+                        Right = parameters.RightMargin
+                    };
+                    pdfOptions.PreferCSSPageSize = parameters.PreferCSSPageSize;
+
+                    pdf = await page.PdfStreamAsync(pdfOptions);
+                    Console.WriteLine($"{guid} {DateTime.Now}: PDF generated");
+                
+                    var closePageTask = page.CloseAsync();
+                    await closePageTask;
+                    Console.WriteLine($"{guid} {DateTime.Now}: page closed");
+                }
+
+                var closeBrowserTask = browser.CloseAsync();
+                await closeBrowserTask;
+                Console.WriteLine($"{guid} {DateTime.Now}: browser closed");
+                
+                return pdf;
             }
-
-            var pdfOptions = new PdfOptions();
-            pdfOptions.Scale = parameters.Scale;
-            pdfOptions.DisplayHeaderFooter = parameters.DisplayHeaderFooter;
-            pdfOptions.HeaderTemplate = parameters.HeaderTemplate;
-            pdfOptions.FooterTemplate = parameters.FooterTemplate;
-            pdfOptions.PrintBackground = parameters.PrintBackground;
-            pdfOptions.Landscape = parameters.Landscape;
-            pdfOptions.PageRanges = parameters.PageRanges;
-            pdfOptions.Format = ConvertToPaperFormat(parameters.PaperFormat);
-            pdfOptions.MarginOptions = new MarginOptions
-            {
-                Top = parameters.TopMargin,
-                Left = parameters.LeftMargin,
-                Bottom = parameters.BottomMargin,
-                Right = parameters.RightMargin
-            };
-            pdfOptions.PreferCSSPageSize = parameters.PreferCSSPageSize;
-
-            var pdf = await page.PdfStreamAsync(pdfOptions);
-            Console.WriteLine($"{guid} {DateTime.Now}: PDF generated");
-            var closePageTask = page.CloseAsync();
-
-            await closePageTask;
-
-            Console.WriteLine($"{guid} {DateTime.Now}: browser closed");
-
-            return pdf;
         }
 
         private static PaperFormat ConvertToPaperFormat(string paperFormat)
