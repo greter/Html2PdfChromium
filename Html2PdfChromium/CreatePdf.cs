@@ -14,6 +14,7 @@ namespace Html2PdfChromium
             var guid = Guid.NewGuid().ToString();
             Console.WriteLine($"{guid} {DateTime.Now}: PDF generation for {parameters.BodyUrl} starts");
             var revInfo = await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
+            
             var launchOptions = new LaunchOptions
             {
                 Headless = true,
@@ -35,7 +36,9 @@ namespace Html2PdfChromium
 
                     if (!response.Ok)
                     {
-                        Console.WriteLine($"{guid} {DateTime.Now}: Page returned with an error {response.Status}");
+                        var message = $"{guid} {DateTime.Now}: Page returned with an error {response.Status}";
+                        Console.WriteLine(message);
+                        throw new Exception(message);
                     }
 
                     var pdfOptions = new PdfOptions();
