@@ -1,5 +1,4 @@
 using System;
-using PuppeteerSharp.Media;
 
 namespace Html2PdfChromium
 {
@@ -76,6 +75,7 @@ namespace Html2PdfChromium
         /// Give any CSS <c>@page</c> size declared in the page priority over what is declared in <c>width</c> and <c>height</c> or <c>format</c> options.
         /// Defaults to <c>false</c>, which will scale the content to fit the paper size.
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public bool PreferCSSPageSize { get; set; } = false;
 
         /// <summary>

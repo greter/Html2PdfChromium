@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Flurl;
 using Flurl.Http;
 
 namespace Html2PdfChromium.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OutBoundIP : Controller
+    public class OutBoundIp : Controller
     {
         private class PublicIp
         {

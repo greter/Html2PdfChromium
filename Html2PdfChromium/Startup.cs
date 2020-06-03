@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace Html2PdfChromium
 {
@@ -30,7 +30,7 @@ namespace Html2PdfChromium
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Html2Pdf API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Html2Pdf API", Version = "v1" });
             });
             
             services.AddHangfire(configuration => configuration
