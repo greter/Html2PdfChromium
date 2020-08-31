@@ -26,7 +26,7 @@ RUN dotnet publish "Html2PdfChromium.csproj" -c Release -o /app  -r linux-x64 --
 
 FROM ubuntu AS final
 RUN apt-get update
-RUN apt-get -y install alsa-base chromium-browser xauth
+RUN apt-get -y install alsa-base chromium-browser xauth libx11-xcb1
 RUN apt-get clean
 WORKDIR /app
 COPY --from=publish /app .
