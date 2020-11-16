@@ -1,9 +1,5 @@
-using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using PuppeteerSharp;
-using PuppeteerSharp.Media;
 
 namespace Html2PdfChromium.Controllers
 {

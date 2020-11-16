@@ -10,16 +10,16 @@ namespace Html2PdfChromium
             Done,
             Error
         }
-        
-        public readonly string conversionId;
-        public DateTime startTimeStamp;
-        public Status status;
+
+        private readonly string conversionId;
+        private DateTime startTimeStamp;
+        public Status TheStatus;
 
         public ConversionJob(string conversionId)
         {
             this.conversionId = conversionId;
             startTimeStamp = DateTime.Now;
-            status = Status.Processing;
+            TheStatus = Status.Processing;
         }
     }
 }
