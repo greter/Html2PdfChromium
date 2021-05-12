@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Html2PdfChromium
 {
@@ -11,15 +13,18 @@ namespace Html2PdfChromium
             Error
         }
 
-        private readonly string conversionId;
-        private DateTime startTimeStamp;
-        public Status TheStatus;
+        public string conversionId  { get; }
+        public DateTime startTimeStamp { get;  }
+        public Status status  { get; set; }
 
-        public ConversionJob(string conversionId)
+        public Thread thread;
+
+        public ConversionJob(string conversionId, Thread thread)
         {
             this.conversionId = conversionId;
+            this.thread = thread;
             startTimeStamp = DateTime.Now;
-            TheStatus = Status.Processing;
+            status = Status.Processing;
         }
     }
 }

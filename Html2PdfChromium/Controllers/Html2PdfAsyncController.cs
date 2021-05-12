@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +17,7 @@ namespace Html2PdfChromium.Controllers
 
         // POST api/Html2PdfAsync/{conversionId}
         [HttpPost("{conversionId}")]
-        public async Task<IActionResult> GetResult(string conversionId)
+        public IActionResult GetResult(string conversionId)
         {
             // if job is in status Processing wait for status change for one minute 
             var requestStart = DateTime.Now;
@@ -31,21 +31,19 @@ namespace Html2PdfChromium.Controllers
                         return NotFound();
                     }
 
-                    switch (Jobs[conversionId].TheStatus)
+                    switch (Jobs[conversionId].status)
                     {
                         case ConversionJob.Status.Processing:
                             break;
                         case ConversionJob.Status.Error:
-                            Jobs.Remove(conversionId);
-                            _pdfs.Remove(conversionId);
+                            Cleanup(conversionId);
                             return StatusCode(StatusCodes.Status500InternalServerError);
                         case ConversionJob.Status.Done:
                             if (_pdfs.ContainsKey(conversionId))
                             {
                                 var fileStreamResult = new FileStreamResult(_pdfs[conversionId], "application/pdf")
                                     {FileDownloadName = "document.pdf"};
-                                Jobs.Remove(conversionId);
-                                _pdfs.Remove(conversionId);
+                                Cleanup(conversionId);
                                 return fileStreamResult;
                             }
                             else
@@ -54,9 +52,17 @@ namespace Html2PdfChromium.Controllers
                             }
                     }
                 }
-                await Task.Delay(100);
+
+                Jobs[conversionId].thread.Join(100);
             }
             return Accepted();
+        }
+
+        private static void Cleanup(string conversionId)
+        {
+            Jobs[conversionId].thread.Join();
+            Jobs.Remove(conversionId);
+            _pdfs.Remove(conversionId);
         }
 
         //POST api/Html2PdfAsync
@@ -64,9 +70,16 @@ namespace Html2PdfChromium.Controllers
         public ActionResult<ConversionJob> CreatePdfAsync([FromBody] PdfParameters parameters)
         {
             var converionId = Guid.NewGuid().ToString();
-            BackgroundJob.Enqueue(() => CreatePdfImpl(converionId, parameters));
 
-            var conversionJob = new ConversionJob(converionId);
+            var thread = new Thread(new ThreadStart(() =>
+            {
+                CreatePdfImpl(converionId, parameters).Wait();
+            }));
+            
+            thread.Start();
+            
+
+            var conversionJob = new ConversionJob(converionId, thread);
             lock (Jobs)
             {
                 Jobs.Add(converionId, conversionJob);
@@ -83,7 +96,7 @@ namespace Html2PdfChromium.Controllers
                 lock (Jobs)
                 lock (_pdfs)
                 {
-                    Jobs[conversionId].TheStatus = ConversionJob.Status.Done;
+                    Jobs[conversionId].status = ConversionJob.Status.Done;
                     _pdfs.Add(conversionId, pdf);
                 }
             }
@@ -95,7 +108,7 @@ namespace Html2PdfChromium.Controllers
                 {
                     if (Jobs.ContainsKey(conversionId))
                     {
-                        Jobs[conversionId].TheStatus = ConversionJob.Status.Error;
+                        Jobs[conversionId].status = ConversionJob.Status.Error;
                     }
                 }
             }
