@@ -38,7 +38,10 @@ namespace WebApplication
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseMemoryStorage());
+                .UseMemoryStorage()
+            );
+            
+            JobStorage.Current = new MemoryStorage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
