@@ -12,7 +12,7 @@ namespace Html2PdfChromium
         {
             var guid = Guid.NewGuid().ToString();
             Console.WriteLine($"{guid} {DateTime.Now}: PDF generation for {parameters.BodyUrl} starts");
-            var revInfo = await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
+            var revInfo = await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
             
             var launchOptions = new LaunchOptions
             {
