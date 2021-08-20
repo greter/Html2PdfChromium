@@ -29,8 +29,9 @@ FROM ubuntu AS final
 ENV TZ=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN apt-get update
-RUN apt-get -y install alsa-base \
+RUN apt update
+RUN apt -y upgrade 
+RUN apt -y install alsa-base \
                        chromium-browser \ 
                        xauth \
                        ca-certificates \
@@ -70,7 +71,7 @@ RUN apt-get -y install alsa-base \
                        lsb-release \
                        wget \
                        xdg-utils 
-RUN apt-get clean
+RUN apt clean
 WORKDIR /app
 COPY --from=publish /app .
 EXPOSE 5000
