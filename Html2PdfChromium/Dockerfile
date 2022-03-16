@@ -21,7 +21,7 @@ RUN dotnet build "Html2PdfChromium.csproj" -c Release -o /app
 FROM build AS publish
 RUN dotnet publish "Html2PdfChromium.csproj" -c Release -o /app  -r linux-x64 --self-contained
 
-FROM ubuntu AS final
+FROM ubuntu:latest AS final
 
 ENV TZ=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -68,6 +68,9 @@ RUN apt -y install alsa-base \
                        lsb-release \
                        wget \
                        xdg-utils 
+RUN apt remove golang-go
+RUN apt remove --auto-remove golang-go
+
 RUN apt clean
 WORKDIR /app
 COPY --from=publish /app .
