@@ -21,7 +21,7 @@ RUN dotnet build "Html2PdfChromium.csproj" -c Release -o /app
 FROM build AS publish
 RUN dotnet publish "Html2PdfChromium.csproj" -c Release -o /app  -r linux-x64 --self-contained
 
-FROM ubuntu:latest AS final
+FROM ubuntu:20.04 AS final
 
 ENV TZ=Etc/UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
