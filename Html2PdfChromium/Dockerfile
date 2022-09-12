@@ -76,4 +76,8 @@ WORKDIR /app
 COPY --from=publish /app .
 EXPOSE 5000
 EXPOSE 5001
+
+RUN useradd --uid 10000 runner
+USER runner:runner
+
 ENTRYPOINT ["/app/Html2PdfChromium"]
