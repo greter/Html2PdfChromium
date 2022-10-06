@@ -43,6 +43,11 @@ namespace Html2PdfChromium
         /// Print background graphics. Defaults to <c>false</c>
         /// </summary>
         public bool PrintBackground { get; set; } = false;
+        
+        /// <summary>
+        /// Hides default white background and allows generating pdfs with transparency
+        /// </summary>
+        public bool OmitBackground  { get; set; } = false;
 
         /// <summary>
         /// Paper orientation.. Defaults to <c>false</c>

@@ -46,6 +46,7 @@ namespace Html2PdfChromium
                     pdfOptions.HeaderTemplate = parameters.HeaderTemplate;
                     pdfOptions.FooterTemplate = parameters.FooterTemplate;
                     pdfOptions.PrintBackground = parameters.PrintBackground;
+                    pdfOptions.OmitBackground = parameters.OmitBackground;
                     pdfOptions.Landscape = parameters.Landscape;
                     pdfOptions.PageRanges = parameters.PageRanges;
                     pdfOptions.Format = ConvertToPaperFormat(parameters.PaperFormat);
