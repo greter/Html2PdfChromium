@@ -13,11 +13,13 @@ namespace Html2PdfChromium
             var guid = Guid.NewGuid().ToString();
             Console.WriteLine($"{guid} {DateTime.Now}: PDF generation for {parameters.BodyUrl} starts");
             var revInfo = await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
+//            var revInfo = await new BrowserFetcher().DownloadAsync("1036826"); // get latest revision from https://chromium.woolyss.com/
             
             var launchOptions = new LaunchOptions
             {
                 Headless = true,
                 Args = new string[] {"--no-sandbox", "--disable-setuid-sandbox"},
+                ExecutablePath = revInfo.ExecutablePath
             };
             using (var browser = await Puppeteer.LaunchAsync(launchOptions))
             {

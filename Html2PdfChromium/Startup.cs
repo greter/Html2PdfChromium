@@ -23,6 +23,7 @@ namespace WebApplication
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "html2pdf", Version = "v1"});
+                c.CustomSchemaIds(type => type.ToString());
             });
         }
 
@@ -33,7 +34,10 @@ namespace WebApplication
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApplication v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApplication v1");
+                });
             }
 
             app.UseHttpsRedirection();
